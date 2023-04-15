@@ -13,7 +13,7 @@
     infinite
     arrows
     class="rounded-borders"
-    height="600px"
+    height="auto"
   >
     <q-carousel-slide class="q-pa-none q-ma-none" :name="item.id"
                       v-for="(item, index) in carrusel_comida_rapida" :key="index">

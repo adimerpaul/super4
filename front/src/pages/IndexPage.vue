@@ -1,45 +1,54 @@
 <template>
   <q-page>
     <CarouselComponent/>
+    <div style="position: relative; width: 100%; overflow: hidden;border: 1px solid #ccc;">
+      <q-icon name="chevron_left" size="2.5rem" color="white"
+              style="position: absolute; left: 0; top: 50%;
+              transform: translateY(-50%);z-index: 1;background: rgba(128,128,128,0.4);"
+              @click="scrollMinus"/>
+      <q-scroll-area ref="scrollAreaRef" style="height: 150px; width: 100%; overflow: auto;">
+        <div class="row no-wrap">
+          <q-card v-for="n in 100" :key="n"
+                  style="width: 140px;height: 140px;overflow: hidden" class="q-ma-xs" flat bordered>
+            <q-card-section class="text-center">
+              <q-icon name="o_lunch_dining" size="2rem" color="grey"/>
+              <div class="">Card {{ n }}
+                Lorem ipsum dolor sit amet
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+      </q-scroll-area>
+      <q-icon name="chevron_right" size="2.5rem" color="white"
+              style="position: absolute; right: 0; top: 50%;
+              transform: translateY(-50%);z-index: 1;background: rgba(128,128,128,0.4);"
+              @click="scrollMore"/>
+    </div>
   </q-page>
 </template>
 
 <script lang="ts">
-import { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import CarouselComponent from 'components/CarouselComponent.vue';
 
 export default defineComponent({
   name: 'IndexPage',
   components: { CarouselComponent },
-  setup() {
-    const todos = ref<Todo[]>([
-      {
-        id: 1,
-        content: 'ct1',
-      },
-      {
-        id: 2,
-        content: 'ct2',
-      },
-      {
-        id: 3,
-        content: 'ct3',
-      },
-      {
-        id: 4,
-        content: 'ct4',
-      },
-      {
-        id: 5,
-        content: 'ct5',
-      },
-    ]);
-    const meta = ref<Meta>({
-      totalCount: 1200,
-    });
-    return { todos, meta };
+  data() {
+    return {
+    };
+  },
+  methods: {
+    scrollMinus() {
+      const number = this.$refs.scrollAreaRef.getScrollPosition('horizontal').left - 300;
+      // console.log(number);
+      this.$refs.scrollAreaRef.setScrollPosition('horizontal', number, 300);
+    },
+    scrollMore() {
+      const number = this.$refs.scrollAreaRef.getScrollPosition('horizontal').left + 300;
+      // console.log(number);
+      this.$refs.scrollAreaRef.setScrollPosition('horizontal', number, 300);
+    },
   },
 });
 </script>

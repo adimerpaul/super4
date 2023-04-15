@@ -3,7 +3,7 @@
     <q-header>
       <div class="row">
         <div class="q-page-container col">
-          <q-toolbar class="bg-primary">
+          <q-toolbar class="bg-black">
             <q-item clickable v-ripple>
               <q-item-section side>
                 <q-avatar rounded size="48px">
@@ -34,14 +34,14 @@
 <!--            </template>-->
             <q-item >
               <q-item-section side v-for="e in essentialLinks" :key="e.title">
-                <q-btn stretch class="text-bold q-mr-sm text-white" :label="e.title" />
+                <q-btn flat class="text-bold q-mr-sm text-white" :label="e.title" />
               </q-item-section>
               <q-item-section side>
                 <q-btn flat round color="white" icon="o_shopping_bag" class="text-bold q-mr-sm" />
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  <q-btn push color="red-10" label="Ingresar" />
+                  <q-btn push color="red-10" label="Ingresar" no-caps />
                 </q-item-label>
               </q-item-section>
             </q-item>
