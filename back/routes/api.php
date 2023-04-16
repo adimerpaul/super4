@@ -18,3 +18,4 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 Route::apiResource('rubros', \App\Http\Controllers\RubroController::class);
+Route::apiResource('productos', \App\Http\Controllers\ProductoController::class);

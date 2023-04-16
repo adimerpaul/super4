@@ -13,7 +13,7 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  <div style="line-height: 85%;font-size: 2em" class="text-bold">
+                  <div style="line-height: 85%;font-size: 1.5em" class="text-bold">
                     Super<br>
                     Hamburgesas
                     <template class="text-red">asas</template>

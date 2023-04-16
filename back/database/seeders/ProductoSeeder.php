@@ -16,18 +16,18 @@ class ProductoSeeder extends Seeder
     {
         DB::table('productos')->insert([
             ["nombre"=>"CAFE","descripcion"=>"Cafe negro","precio"=>7,"rubro_id"=>'1',"imagen"=>"café-800x400.jpg"],
-            ["nombre"=>"TE","descripcion"=>"Te","precio"=>6,"rubro_id"=>'1',"imagen"=>"default.jpg"],
-            ["nombre"=>"MATES","descripcion"=>"Mate Natural","precio"=>6,"rubro_id"=>'1',"imagen"=>"default.jpg"],
-            ["nombre"=>"TE CON TE ","descripcion"=>"Te con singani","precio"=>15,"rubro_id"=>'1',"imagen"=>"default.jpg"],
-            ["nombre"=>"TODY CON LECHE ","descripcion"=>"Tody con leche","precio"=>12,"rubro_id"=>'1',"imagen"=>"default.jpg"],
+            ["nombre"=>"TE","descripcion"=>"Te","precio"=>6,"rubro_id"=>'1',"imagen"=>"descarga.jpg"],
+            ["nombre"=>"MATES","descripcion"=>"Mate Natural","precio"=>6,"rubro_id"=>'1',"imagen"=>"79a8c10f-e9a5-495f-bc5f-f2f7c6c94400_16-9-aspect-ratio_default_0.jpg"],
+            ["nombre"=>"TE CON TE ","descripcion"=>"Te con singani","precio"=>15,"rubro_id"=>'1',"imagen"=>"singani-te-con-te-san-juan.webp"],
+            ["nombre"=>"TODDY CON LECHE ","descripcion"=>"Toddy con leche","precio"=>12,"rubro_id"=>'1',"imagen"=>"descarga (1).jpg"],
 
-            ["nombre"=>"CAPUCHINO ","descripcion"=>"Cafe, crema y canela","precio"=>12,"rubro_id"=>'2',"imagen"=>"default.jpg"],
-            ["nombre"=>"MOKACHINO ","descripcion"=>"Cafe, chocolate y crema","precio"=>14,"rubro_id"=>'2',"imagen"=>"default.jpg"],
-            ["nombre"=>"MOKACHINO ESPUMOSO","descripcion"=>"Cafe, leche espumante y baño de chocolate","precio"=>15,"rubro_id"=>'2',"imagen"=>"default.jpg"],
-            ["nombre"=>"CAFE CORTADO ","descripcion"=>"Cafe con chorrito de leche evaporada","precio"=>12,"rubro_id"=>'2',"imagen"=>"default.jpg"],
-            ["nombre"=>"CAFE CARAMELO","descripcion"=>"Cafe, dulce de leche y crema","precio"=>16,"rubro_id"=>'2',"imagen"=>"default.jpg"],
+            ["nombre"=>"CAPUCHINO ","descripcion"=>"Cafe, crema y canela","precio"=>12,"rubro_id"=>'2',"imagen"=>"descarga (2).jpg"],
+            ["nombre"=>"MOKACHINO ","descripcion"=>"Cafe, chocolate y crema","precio"=>14,"rubro_id"=>'2',"imagen"=>"crema-cafe-chocolate.jpg"],
+            ["nombre"=>"MOKACHINO ESPUMOSO","descripcion"=>"Cafe, leche espumante y baño de chocolate","precio"=>15,"rubro_id"=>'2',"imagen"=>"cappuccino-chocolate-caliente-cafe-cafe-frappe-frappuccino.jpg"],
+            ["nombre"=>"CAFE CORTADO ","descripcion"=>"Cafe con chorrito de leche evaporada","precio"=>12,"rubro_id"=>'2',"imagen"=>"cafx-con-leche-en-las-rocas.jpeg_1902800913.webp"],
+            ["nombre"=>"CAFE CARAMELO","descripcion"=>"Cafe, dulce de leche y crema","precio"=>16,"rubro_id"=>'2',"imagen"=>"maxresdefault.jpg"],
 
-            ["nombre"=>"CAPUCHINO HELADO","descripcion"=>"Frapeado de cafe, helado de capuchino y crema","precio"=>23,"rubro_id"=>'3',"imagen"=>"default.jpg"],
+            ["nombre"=>"CAPUCHINO HELADO","descripcion"=>"Frapeado de cafe, helado de capuchino y crema","precio"=>23,"rubro_id"=>'3',"imagen"=>"cafe_frappe.jpg"],
             ["nombre"=>"FRAPUCHINO","descripcion"=>"Frapeado de cafe, chocolate y crema","precio"=>23,"rubro_id"=>'3',"imagen"=>"default.jpg"],
             ["nombre"=>"TE HELADO","descripcion"=>"Frapeado de te y limon","precio"=>18,"rubro_id"=>'3',"imagen"=>"default.jpg"],
             ["nombre"=>"FRAPPE CON YOGURT","descripcion"=>"Frapeado de yogurt con frutas naturales de la temporada","precio"=>23,"rubro_id"=>'3',"imagen"=>"default.jpg"],
