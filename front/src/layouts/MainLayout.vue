@@ -45,7 +45,7 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  <q-btn push color="red-10" label="Ingresar" no-caps />
+                  <q-btn push color="red-10" label="Ingresar" @click="ingresar" no-caps />
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
@@ -73,11 +73,103 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-dialog v-model="loginDialig" persistent>
+      <q-card bordered class="bg-primary text-white" style="width: 600px; max-width: 80vw;">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Ingresar</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <div class="text-center">
+            <q-avatar size="80px" class="">
+              <q-img src="logo.png" />
+            </q-avatar>
+            <template v-if="typeLogin === 'login'">
+              <div class="text-subtitle2">Elijá una opción para ingresar</div>
+              <div class="row justify-center q-mt-md">
+                <q-btn color="blue-8" label="Ingresar con Google" no-caps
+                       class="full-width q-mb-xs" icon="fa-brands fa-google" rounded />
+                <q-btn  label="Continuar con correo" no-caps
+                        @click="typeLogin = 'email'"
+                        class="full-width q-mb-xs" icon="o_email" rounded outline />
+              </div>
+            </template>
+            <template v-if="typeLogin === 'email'">
+              <div class="text-subtitle2">Ingrese su correo y contraseña</div>
+              <q-card class="q-mt-md">
+                <q-card-section>
+                  <q-input dense ou v-model="user.email" label="Correo"  type="email"
+                           :rules="[val => val && val.length > 0 || 'El correo es requerido']" />
+                  <q-input dense v-model="user.password" label="Contraseña"
+                           :type="visible ? 'text' : 'password'"
+                           :rules="[val => val && val.length > 0 || 'La contraseña es requerida']">
+                    <template v-slot:append>
+                      <q-icon @click="visible=!visible" class="cursor-pointer"
+                              :name="visible ? 'visibility_off' : 'visibility'">
+                        <q-tooltip>Mostrar contraseña</q-tooltip>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                  <q-btn color="primary" label="Ingresar" no-caps
+                         class="full-width q-mt-xs" icon="o_login" rounded />
+                  <q-btn outline color="primary" label="Registrarse" no-caps
+                         @click="typeLogin = 'register'"
+                         class="full-width q-mt-xs" icon="o_add" rounded />
+                  <q-btn flat color="primary" label="Atrás" no-caps
+                         @click="typeLogin = 'login'"
+                         class="full-width q-mt-xs" icon="o_arrow_back" rounded />
+                </q-card-section>
+              </q-card>
+            </template>
+            <template v-if="typeLogin === 'register'">
+              <div class="text-subtitle2">Registrate</div>
+              <q-card class="q-mt-md">
+                <q-card-section>
+                  <q-input dense v-model="user.name" label="Nombre"
+                           :rules="[val => val && val.length > 0 || 'El nombre es requerido']" />
+                  <q-input dense v-model="user.email" label="Correo"  type="email"
+                           :rules="[val => val && val.length > 0 || 'El correo es requerido']" />
+                  <q-input dense v-model="user.password" label="Contraseña"
+                           :type="visible ? 'text' : 'password'"
+                           :rules="[val => val && val.length > 0 || 'La contraseña es requerida']">
+                    <template v-slot:append>
+                      <q-icon @click="visible=!visible" class="cursor-pointer"
+                              :name="visible ? 'visibility_off' : 'visibility'">
+                        <q-tooltip>Mostrar contraseña</q-tooltip>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                  <q-input dense v-model="user.repeatPassword" label="Repetir contraseña"
+                           :type="visible ? 'text' : 'password'"
+                           :rules="[
+                             val => val && val.length > 0 || 'La contraseña es requerida',
+                             val => val === user.password || 'Las contraseñas no coinciden'
+                             ]">
+                    <template v-slot:append>
+                      <q-icon @click="visible=!visible" class="cursor-pointer"
+                              :name="visible ? 'visibility_off' : 'visibility'">
+                        <q-tooltip>Mostrar contraseña</q-tooltip>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                  <q-btn color="primary" label="Registrarse" no-caps
+                         class="full-width q-mt-xs" icon="o_add" rounded />
+                  <q-btn flat color="primary" label="Atrás" no-caps
+                         @click="typeLogin = 'login'"
+                         class="full-width q-mt-xs" icon="o_arrow_back" rounded />
+                </q-card-section>
+              </q-card>
+            </template>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
   </q-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 
 const linksList = [
@@ -99,23 +191,36 @@ const linksList = [
   },
 ];
 
-export default defineComponent({
+export default {
   name: 'MainLayout',
 
   components: {
     EssentialLink,
   },
-
-  setup() {
-    const leftDrawerOpen = ref(false);
-
+  data() {
     return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
+      visible: false,
+      tab: 'login',
+      user: {
+        email: '',
+        password: '',
+        repeatPassword: '',
+        name: '',
       },
+      essentialLinks: linksList,
+      leftDrawerOpen: false,
+      loginDialig: false,
+      typeLogin: 'login',
     };
+  },
+  methods: {
+    toggleLeftDrawer() {
+      this.leftDrawerOpen = !this.leftDrawerOpen;
+    },
+    ingresar() {
+      this.loginDialig = true;
+      this.typeLogin = 'login';
+    },
   },
   computed: {
     cantidadPedidos() {
@@ -126,5 +231,5 @@ export default defineComponent({
       return cantidad;
     },
   },
-});
+};
 </script>

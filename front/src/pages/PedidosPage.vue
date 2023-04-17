@@ -110,6 +110,8 @@ export default {
             color: 'positive',
             icon: 'check',
             position: 'top',
+            actions: [{ icon: 'close', color: 'white' }],
+            timeout: 1000,
           });
         }
       }).onCancel(() => {
