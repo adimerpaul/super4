@@ -17,5 +17,6 @@ use Illuminate\Support\Facades\Route;
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
+Route::post('sociallogin/{provider}', [\App\Http\Controllers\AuthController::class,'SocialSignup']);
 Route::apiResource('rubros', \App\Http\Controllers\RubroController::class);
 Route::apiResource('productos', \App\Http\Controllers\ProductoController::class);

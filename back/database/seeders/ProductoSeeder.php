@@ -28,7 +28,7 @@ class ProductoSeeder extends Seeder
             ["nombre"=>"CAFE CARAMELO","descripcion"=>"Cafe, dulce de leche y crema","precio"=>16,"rubro_id"=>'2',"imagen"=>"maxresdefault.jpg"],
 
             ["nombre"=>"CAPUCHINO HELADO","descripcion"=>"Frapeado de cafe, helado de capuchino y crema","precio"=>23,"rubro_id"=>'3',"imagen"=>"cafe_frappe.jpg"],
-            ["nombre"=>"FRAPUCHINO","descripcion"=>"Frapeado de cafe, chocolate y crema","precio"=>23,"rubro_id"=>'3',"imagen"=>"default.jpg"],
+            ["nombre"=>"FRAPUCHINO","descripcion"=>"Frapeado de cafe, chocolate y crema","precio"=>23,"rubro_id"=>'3',"imagen"=>"receta-de-moka-frappe-1.jpg"],
             ["nombre"=>"TE HELADO","descripcion"=>"Frapeado de te y limon","precio"=>18,"rubro_id"=>'3',"imagen"=>"default.jpg"],
             ["nombre"=>"FRAPPE CON YOGURT","descripcion"=>"Frapeado de yogurt con frutas naturales de la temporada","precio"=>23,"rubro_id"=>'3',"imagen"=>"default.jpg"],
 

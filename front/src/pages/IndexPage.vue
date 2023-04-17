@@ -9,7 +9,7 @@
               @click="scrollMinus" class="cursor-pointer"/>
       <q-scroll-area ref="scrollAreaRef" style="height: 135px; width: 100%; overflow: auto;">
         <div class="row no-wrap">
-          <q-card v-for="r in rubros" :key="r.id"
+          <q-card v-for="r in $store.rubros" :key="r.id"
                   style="width: 140px;height: 120px;overflow: hidden"
                   class="q-ma-xs bg-blue-1 cursor-pointer" flat bordered
                   @click="rubroFilter(r.id)"
@@ -26,14 +26,16 @@
               transform: translateY(-50%);z-index: 1;background: rgba(128,128,128,0.4);"
               @click="scrollMore" class="cursor-pointer"/>
     </div>
-    <div class="text-h6 text-center q-mt-md">Nuestros Productos</div>
+    <div class="text-h6 text-center q-mt-md">
+      Nuestros Productos <q-icon class="cursor-pointer" name="refresh" @click="refresh" />
+    </div>
     <q-input v-model="search" outlined label="Buscar Producto"
              class="q-ma-md" clearable counter
              hint="Ej: Hamburguesa, Pizza, etc." :debounce="500"
              @update:model-value="productSearch"
     ></q-input>
     <div class="row">
-      <div class="col-6 col-md-2 q-pa-xs" v-for="p in products" :key="p.id">
+      <div class="col-6 col-md-2 q-pa-xs" v-for="p in this.$store.productos" :key="p.id">
         <q-card @click="openDialog(p)" class="cursor-pointer">
           <q-img :src="`${$url}../images/${p.imagen}`" width="100%" height="150px">
             <div class="absolute-bottom text-subtitle2 text-center"
@@ -130,58 +132,83 @@ export default defineComponent({
   data() {
     return {
       search: '',
-      rubros: [],
-      products: [],
+      // rubros: [],
+      // products: [],
       cantidades: [],
-      pT: [],
+      // pT: [],
       product: {},
       card: false,
     };
+  },
+  mounted() {
+    this.$store.productos = this.$store.pT;
   },
   created() {
     for (let i = 1; i <= 20; i += 1) {
       this.cantidades.push(i);
     }
-    this.$axios.get('rubros').then((response) => {
-      this.rubros = response.data;
-    });
-    this.$axios.get('productos').then((response) => {
-      this.products = response.data;
-      this.pT = response.data;
-    });
+    if (this.$store.rubros.length === 0) {
+      this.$axios.get('rubros').then((response) => {
+        this.$store.rubros = response.data;
+      });
+    }
+    if (this.$store.productos.length === 0) {
+      this.$axios.get('productos').then((response) => {
+        this.$store.productos = response.data;
+        this.$store.pT = response.data;
+      });
+    }
   },
   methods: {
-    minusCantidad(p: any) {
+    refresh() {
+      this.$store.productos = this.$store.pT;
+    },
+    addToCart(p) {
+      p.total = p.precio * p.cantidad;
+      this.$store.pedidos.push(p);
+      this.card = false;
+      this.$q.notify({
+        message: 'Producto agregado al carrito',
+        color: 'green-4',
+        actions: [{ icon: 'close', color: 'white' }],
+        textColor: 'white',
+        icon: 'check_circle',
+        position: 'top',
+        timeout: 1000,
+      });
+    },
+    minusCantidad(p) {
       if (p.cantidad > 1) {
         p.cantidad -= 1;
       }
     },
-    plusCantidad(p: any) {
+    plusCantidad(p) {
       if (p.cantidad < 20) {
         p.cantidad += 1;
       }
     },
-    openDialog(p: any) {
+    openDialog(p) {
       this.product = p;
       this.product.cantidad = 1;
       this.card = true;
     },
     rubroFilter(id: number) {
       if (id === 0) {
-        this.products = this.pT;
+        this.$store.productos = this.$store.pT;
       } else {
-        this.products = this.pT.filter((p: any) => p.rubro_id === id);
+        this.$store.productos = this.$store.pT.filter((p) => p.rubro_id === id);
       }
     },
     productSearch(search: string) {
       // console.log(search);
       if (search == null || search.length === 0) {
-        this.products = this.pT;
+        this.$store.productos = this.$store.pT;
       } else if (search.length > 0) {
         const s = search.toLowerCase();
-        this.products = this.pT.filter((p: any) => p.descripcion.toLowerCase().includes(s));
+        const productos = this.$store.pT.filter((p) => p.descripcion.toLowerCase().includes(s));
+        this.$store.productos = productos;
       } else {
-        this.products = [];
+        this.$store.productos = [];
       }
     },
     scrollMinus() {
