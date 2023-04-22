@@ -118,7 +118,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="addressDialog" persistent>
-      <q-card style="width: 700px; max-width: 90vw;">
+      <q-card style="width: 500px; max-width: 90vw;">
         <q-card-section class="row items-center q-pb-none">
           <q-avatar icon="add_location" color="primary" text-color="white" size="md" />
           <div class="text-h6 q-ml-sm">Crear direccion</div>
@@ -129,6 +129,21 @@
           <q-form @submit="addressCreate" @reset="addressDialog = false" class="q-gutter-md">
             <q-input outlined dense v-model="address.address" label="Dirección" />
             <q-input outlined dense v-model="address.description" label="Descripción" />
+            <div style="height:500px" class="items-center">
+              <l-map ref="map" @click="clickMaps"
+                     :zoom="13" :maxZoom="17" :center="[-17.970, -67.1111 ]" >
+                <l-tile-layer
+                  :url="styleMap?`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`:`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`"
+                  layer-type="base"
+                  name="OpenStreetMap"
+                ></l-tile-layer>
+                <l-marker :lat-lng="markerLatLng" @moveend="ondragend" draggable  ></l-marker>
+                <l-control position="topright" >
+                  <q-btn @click="styleMap=!styleMap"
+                         icon="map" class="bg-primary text-white" dense round></q-btn>
+                </l-control>
+              </l-map>
+            </div>
             <div class="row">
               <div class="col-6">
                 <q-btn color="primary" label="Crear" type="submit" no-caps dense />
@@ -146,12 +161,28 @@
 
 <script>
 import LoginComponent from 'components/LoginComponent.vue';
+import {
+  LMap,
+  LTileLayer,
+  LMarker,
+  LControl,
+} from '@vue-leaflet/vue-leaflet';
+
+import 'leaflet/dist/leaflet.css';
 
 export default {
   name: 'PedidosPage',
-  components: { LoginComponent },
+  components: {
+    LoginComponent,
+    LMap,
+    LTileLayer,
+    LMarker,
+    LControl,
+  },
   data() {
     return {
+      styleMap: true,
+      markerLatLng: [-17.970, -67.1111],
       pedidoDialog: false,
       addressDialog: false,
       loginDialog: false,
@@ -167,6 +198,15 @@ export default {
     this.addressesGet();
   },
   methods: {
+    clickMaps(e) {
+      if (e.latlng) {
+        this.markerLatLng = e.latlng;
+      }
+    },
+    ondragend(e) {
+      console.log(e.target);
+      // this.markerLatLng = [e.target._latlng.lat, e.target._latlng.lng];
+    },
     addressCreate() {
       this.$axios.post('address', this.address).then(() => {
         this.addressesGet();
