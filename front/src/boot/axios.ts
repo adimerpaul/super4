@@ -28,13 +28,33 @@ const options = {
     },
   },
 };
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const Oauth = new UniversalSocialauth(axios, options);
-export default boot(({ app }) => {
+export default boot(({ app, router }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
   app.config.globalProperties.$Oauth = Oauth;
   app.config.globalProperties.$axios = axios.create({ baseURL: import.meta.env.VITE_API_BACK });
   app.config.globalProperties.$url = import.meta.env.VITE_API_BACK;
   app.config.globalProperties.$store = useCounterStore();
+  const token = localStorage.getItem('tokenSuper');
+  if (token) {
+    useCounterStore().loading = true;
+    app.config.globalProperties.$axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+    app.config.globalProperties.$axios.post('me').then((res) => {
+      // console.log(res.data)
+      useCounterStore().user = res.data;
+      useCounterStore().isLoggedIn = true;
+    }).catch(() => {
+      app.config.globalProperties.$axios.defaults.headers.common.Authorization = '';
+      useCounterStore().user = {};
+      localStorage.removeItem('tokenSuper');
+      useCounterStore().isLoggedIn = false;
+      router.push('/');
+    }).finally(() => {
+      useCounterStore().loading = false;
+    });
+  }
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 

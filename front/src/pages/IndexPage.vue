@@ -122,7 +122,7 @@
   </q-page>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from 'vue';
 import CarouselComponent from 'components/CarouselComponent.vue';
 
@@ -192,14 +192,14 @@ export default defineComponent({
       this.product.cantidad = 1;
       this.card = true;
     },
-    rubroFilter(id: number) {
+    rubroFilter(id) {
       if (id === 0) {
         this.$store.productos = this.$store.pT;
       } else {
         this.$store.productos = this.$store.pT.filter((p) => p.rubro_id === id);
       }
     },
-    productSearch(search: string) {
+    productSearch(search) {
       // console.log(search);
       if (search == null || search.length === 0) {
         this.$store.productos = this.$store.pT;

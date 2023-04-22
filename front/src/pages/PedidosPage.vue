@@ -29,9 +29,11 @@
           <q-item v-if="$store.pedidos.length > 0">
             <q-item-section>
               <q-item-label>
-                <q-btn color="primary" label="Realizar pedido" class="full-width" rounded no-caps>
+                <q-btn color="primary" label="Realizar pedido"
+                       @click="realizarPedido" class="full-width" rounded no-caps>
                   <div class="">
-                    : <span class="text-subtitle2">{{ total }}Bs</span>
+                    : <q-badge color="white" text-color="black" dense
+                               class="text-bold">{{ total }}Bs</q-badge>
                   </div>
                 </q-btn>
               </q-item-label>
@@ -47,52 +49,153 @@
         </q-list>
       </q-card-section>
     </q-card>
-<!--    <button @click="useAuthProvider('github', null)">auth Github</button>-->
-<!--    <button @click="useAuthProvider('facebook', null)">auth Facebook</button>-->
-    <button @click="useAuthProvider('google', null)">auth Google</button>
-<!--    <button @click="useAuthProvider('twitter', null)">auth Twitter</button>-->
+    <q-dialog v-model="loginDialog" persistent>
+      <LoginComponent  @closeDialog="closeDialog"/>
+    </q-dialog>
+    <q-dialog v-model="pedidoDialog" persistent>
+      <q-card style="width: 700px; max-width: 90vw;">
+        <q-card-section class="row items-center q-pb-none">
+          <q-avatar icon="shopping_cart" color="primary" text-color="white" size="md" />
+          <div class="text-h6 q-ml-sm">Realizar pedido</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <template v-if="status === 'pedido'">
+            <div class="text-center text-h6">Elije una forma de entrega</div>
+            <div class="row">
+              <div class="col-6 flex flex-center">
+                <q-btn color="primary" push no-caps dense
+                       @click="status = 'envio';sale.type = 'delivery'">
+                  <div class="row items-center no-wrap">
+                    <q-icon left name="local_shipping" />
+                    <div class="text-center">
+                      Delivery <br>
+                      Tu pedido llega a tu casa
+                    </div>
+                  </div>
+                </q-btn>
+              </div>
+              <div class="col-6 flex flex-center">
+                <q-btn color="primary" push no-caps dense
+                       @click="status = 'envio';sale.type = 'store'">
+                  <div class="row items-center no-wrap">
+                    <q-icon left name="store" />
+                    <div class="text-center">
+                      Recoger en tienda <br>
+                      Recoge tu pedido en la tienda
+                    </div>
+                  </div>
+                </q-btn>
+              </div>
+            </div>
+          </template>
+          <template v-if="status === 'envio'">
+            <div class="row">
+              <div class="col-10 col-sm-11">
+                <q-select dense outlined label="Direccion"
+                          v-model="sale.address_id" :options="addresses"
+                          map-options
+                          option-value="id"
+                          option-label="address"
+                          emit-value
+                />
+              </div>
+              <div class="col-2 col-sm-1 flex flex-center">
+                <q-btn color="primary" no-caps dense icon="add" round @click="addressDialog = true">
+                  <q-tooltip>Crear direccion</q-tooltip>
+                </q-btn>
+              </div>
+              <div class="col-12">
+                <pre>{{addresses}}</pre>
+                <pre>{{sale}}</pre>
+              </div>
+            </div>
+            <q-btn color="primary" label="Atras" icon="arrow_back" dense no-caps
+                   @click="status = 'pedido'"/>
+          </template>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="addressDialog" persistent>
+      <q-card style="width: 700px; max-width: 90vw;">
+        <q-card-section class="row items-center q-pb-none">
+          <q-avatar icon="add_location" color="primary" text-color="white" size="md" />
+          <div class="text-h6 q-ml-sm">Crear direccion</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-form @submit="addressCreate" @reset="addressDialog = false" class="q-gutter-md">
+            <q-input outlined dense v-model="address.address" label="Dirección" />
+            <q-input outlined dense v-model="address.description" label="Descripción" />
+            <div class="row">
+              <div class="col-6">
+                <q-btn color="primary" label="Crear" type="submit" no-caps dense />
+              </div>
+              <div class="col-6">
+                <q-btn color="primary" label="Cancelar" type="reset" no-caps dense />
+              </div>
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import { Providers } from 'universal-social-auth';
+import LoginComponent from 'components/LoginComponent.vue';
 
 export default {
   name: 'PedidosPage',
+  components: { LoginComponent },
+  data() {
+    return {
+      pedidoDialog: false,
+      addressDialog: false,
+      loginDialog: false,
+      status: '',
+      sale: {},
+      invoices: [],
+      addresses: [],
+      address: {},
+    };
+  },
+  created() {
+    this.invoicesGet();
+    this.addressesGet();
+  },
   methods: {
-    useAuthProvider(provider, proData) {
-      const pro = proData;
-      const ProData = pro || Providers[provider];
-      this.$q.loading.show();
-      this.$Oauth.authenticate(provider, ProData).then((response) => {
-        if (response.code) {
-          this.$axios.post(`sociallogin/${provider}`, response).then((res) => {
-            console.log(res.data);
-            this.$q.loading.hide();
-            this.$q.notify({
-              message: 'Bienvenido',
-              color: 'positive',
-              icon: 'check_circle',
-              position: 'top',
-            });
-            // this.$router.push('/');
-            // this.store.user=res.data.user;
-            // this.store.isLoggedIn = true;
-            // this.$api.defaults.headers.common['Authorization'] = 'Bearer '+res.data.token
-            // localStorage.setItem('tokenChat',res.data.token)
-          }).catch((err) => {
-            console.log(err);
-          }).finally(() => {
-            this.$q.loading.hide();
-          });
-        } else {
-          this.$q.loading.hide();
-        }
-      }).catch((err) => {
-        console.log(err);
-      }).finally(() => {
-        // this.$q.loading.hide()
+    addressCreate() {
+      this.$axios.post('address', this.address).then(() => {
+        this.addressesGet();
+        this.address = {};
+        this.addressDialog = false;
       });
+    },
+    addressesGet() {
+      this.addresses = [{ id: 0, address: 'Elejir una direccion' }];
+      this.$axios.get('address').then((response) => {
+        this.addresses = [...this.addresses, ...response.data];
+      });
+    },
+    invoicesGet() {
+      this.invoices = [{ id: 0, name: 'Elejir una factura' }];
+      this.$axios.get('invoices').then((response) => {
+        this.invoices = response.data;
+      });
+    },
+    closeDialog() {
+      this.loginDialog = false;
+    },
+    realizarPedido() {
+      if (this.$store.isLoggedIn) {
+        this.pedidoDialog = true;
+        this.status = 'pedido';
+      } else {
+        this.loginDialog = true;
+      }
     },
     eliminarPedido(index) {
       this.$q.dialog({

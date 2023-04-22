@@ -5,7 +5,10 @@ export const useCounterStore = defineStore('counter', {
     counter: 0,
     pedidos: [],
     productos: [],
+    user: {},
+    isLoggedIn: false,
     rubros: [],
+    loading: false,
     pF: [],
   }),
   getters: {

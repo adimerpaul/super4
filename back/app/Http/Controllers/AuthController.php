@@ -26,6 +26,12 @@ class AuthController extends Controller
                 'user'=>$user
             ],200);
         }else{
+            $usuario= User::where('email', $user->email)->first();
+            if ($usuario){
+                return response()->json([
+                    'message'=>'El correo ya esta registrado, por favor continue con correo y contraseña'
+                ],400);
+            }
             $nombreArchivo = time().".jpg";
             $newfile = 'images/'.$nombreArchivo;
             copy($user->avatar, $newfile);

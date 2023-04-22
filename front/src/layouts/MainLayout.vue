@@ -27,15 +27,11 @@
             <q-space />
               <q-btn v-if="$q.screen.lt.md" flat round
                      icon="menu" class="text-bold q-mr-sm" @click="toggleLeftDrawer" />
-<!--            <template>-->
-<!--              <q-btn stretch-->
-<!--                     v-for="e in essentialLinks" :key="e.title" :label="e.title"/>-->
-<!--            </template>-->
             <q-item >
               <q-item-section side v-for="e in essentialLinks" :key="e.title">
                 <q-btn flat class="text-bold q-mr-sm text-white" :label="e.title" :to="e.link" />
               </q-item-section>
-              <q-item-section side>
+              <q-item-section side v-if="!$q.screen.lt.md">
                 <q-btn flat round color="white" icon="o_shopping_bag" class="text-bold q-mr-sm"
                        to="/pedidos">
                   <q-badge floating color="red" v-if="$store.pedidos.length > 0">
@@ -44,12 +40,40 @@
                 </q-btn>
               </q-item-section>
               <q-item-section>
-                <q-item-label>
-                  <q-btn push color="red-10" label="Ingresar" @click="ingresar" no-caps />
+                <q-item-label class="cursor-pointer">
+                  <q-btn push color="red-10" label="Ingresar" @click="ingresar"
+                         no-caps v-if="!$store.isLoggedIn" :loading="$store.loading" />
                 </q-item-label>
               </q-item-section>
-              <q-item-section side>
-              </q-item-section>
+              <q-btn-dropdown outline no-caps dense v-if="$store.isLoggedIn">
+                <template v-slot:label>
+                  <div class="row items-center no-wrap">
+                    <q-avatar v-if="$store.isLoggedIn" size="32px">
+                      <img :src="`${$url}../images/${$store.user.avatar}`" />
+                    </q-avatar>
+                  </div>
+                </template>
+                <q-list>
+                  <q-item clickable v-close-popup v-ripple>
+                    <q-item-section avatar><q-icon name="person" /></q-item-section>
+                    <q-item-section><q-item-label>Mi perfil</q-item-label></q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup v-ripple>
+                    <q-item-section avatar><q-icon name="o_shopping_bag" /></q-item-section>
+                    <q-item-section><q-item-label>Mis pedidos</q-item-label></q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup v-ripple to="/pedidos">
+                    <q-item-section avatar><q-icon name="o_shopping_cart" /></q-item-section>
+                    <q-item-section><q-item-label>
+                      Mi carrito({{cantidadPedidos}})
+                    </q-item-label></q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup v-ripple @click="logout">
+                    <q-item-section avatar><q-icon name="exit_to_app" /></q-item-section>
+                    <q-item-section><q-item-label>Salir</q-item-label></q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
             </q-item>
           </q-toolbar>
         </div>
@@ -73,104 +97,15 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-dialog v-model="loginDialig" persistent>
-      <q-card bordered class="bg-primary text-white" style="width: 600px; max-width: 80vw;">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Ingresar</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-          <div class="text-center">
-            <q-avatar size="80px" class="">
-              <q-img src="logo.png" />
-            </q-avatar>
-            <template v-if="typeLogin === 'login'">
-              <div class="text-subtitle2">Elijá una opción para ingresar</div>
-              <div class="row justify-center q-mt-md">
-                <q-btn color="blue-8" label="Ingresar con Google" no-caps
-                       class="full-width q-mb-xs" icon="fa-brands fa-google" rounded />
-                <q-btn  label="Continuar con correo" no-caps
-                        @click="typeLogin = 'email'"
-                        class="full-width q-mb-xs" icon="o_email" rounded outline />
-              </div>
-            </template>
-            <template v-if="typeLogin === 'email'">
-              <div class="text-subtitle2">Ingrese su correo y contraseña</div>
-              <q-card class="q-mt-md">
-                <q-card-section>
-                  <q-input dense ou v-model="user.email" label="Correo"  type="email"
-                           :rules="[val => val && val.length > 0 || 'El correo es requerido']" />
-                  <q-input dense v-model="user.password" label="Contraseña"
-                           :type="visible ? 'text' : 'password'"
-                           :rules="[val => val && val.length > 0 || 'La contraseña es requerida']">
-                    <template v-slot:append>
-                      <q-icon @click="visible=!visible" class="cursor-pointer"
-                              :name="visible ? 'visibility_off' : 'visibility'">
-                        <q-tooltip>Mostrar contraseña</q-tooltip>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                  <q-btn color="primary" label="Ingresar" no-caps
-                         class="full-width q-mt-xs" icon="o_login" rounded />
-                  <q-btn outline color="primary" label="Registrarse" no-caps
-                         @click="typeLogin = 'register'"
-                         class="full-width q-mt-xs" icon="o_add" rounded />
-                  <q-btn flat color="primary" label="Atrás" no-caps
-                         @click="typeLogin = 'login'"
-                         class="full-width q-mt-xs" icon="o_arrow_back" rounded />
-                </q-card-section>
-              </q-card>
-            </template>
-            <template v-if="typeLogin === 'register'">
-              <div class="text-subtitle2">Registrate</div>
-              <q-card class="q-mt-md">
-                <q-card-section>
-                  <q-input dense v-model="user.name" label="Nombre"
-                           :rules="[val => val && val.length > 0 || 'El nombre es requerido']" />
-                  <q-input dense v-model="user.email" label="Correo"  type="email"
-                           :rules="[val => val && val.length > 0 || 'El correo es requerido']" />
-                  <q-input dense v-model="user.password" label="Contraseña"
-                           :type="visible ? 'text' : 'password'"
-                           :rules="[val => val && val.length > 0 || 'La contraseña es requerida']">
-                    <template v-slot:append>
-                      <q-icon @click="visible=!visible" class="cursor-pointer"
-                              :name="visible ? 'visibility_off' : 'visibility'">
-                        <q-tooltip>Mostrar contraseña</q-tooltip>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                  <q-input dense v-model="user.repeatPassword" label="Repetir contraseña"
-                           :type="visible ? 'text' : 'password'"
-                           :rules="[
-                             val => val && val.length > 0 || 'La contraseña es requerida',
-                             val => val === user.password || 'Las contraseñas no coinciden'
-                             ]">
-                    <template v-slot:append>
-                      <q-icon @click="visible=!visible" class="cursor-pointer"
-                              :name="visible ? 'visibility_off' : 'visibility'">
-                        <q-tooltip>Mostrar contraseña</q-tooltip>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                  <q-btn color="primary" label="Registrarse" no-caps
-                         class="full-width q-mt-xs" icon="o_add" rounded />
-                  <q-btn flat color="primary" label="Atrás" no-caps
-                         @click="typeLogin = 'login'"
-                         class="full-width q-mt-xs" icon="o_arrow_back" rounded />
-                </q-card-section>
-              </q-card>
-            </template>
-          </div>
-        </q-card-section>
-      </q-card>
+    <q-dialog v-model="loginDialog" persistent>
+      <LoginComponent  @closeDialog="closeDialog"/>
     </q-dialog>
-
   </q-layout>
 </template>
 
-<script lang="ts">
+<script>
 import EssentialLink from 'components/EssentialLink.vue';
+import LoginComponent from 'components/LoginComponent.vue';
 
 const linksList = [
   {
@@ -196,29 +131,48 @@ export default {
 
   components: {
     EssentialLink,
+    LoginComponent,
   },
   data() {
     return {
       visible: false,
-      tab: 'login',
-      user: {
-        email: '',
-        password: '',
-        repeatPassword: '',
-        name: '',
-      },
       essentialLinks: linksList,
       leftDrawerOpen: false,
-      loginDialig: false,
+      loginDialog: false,
       typeLogin: 'login',
     };
   },
   methods: {
+    closeDialog() {
+      this.loginDialog = false;
+    },
+    logout() {
+      this.$q.dialog({
+        message: '¿Quieres cerrar sesión?',
+        title: 'Salir',
+        ok: {
+          push: true,
+        },
+        cancel: {
+          push: true,
+          color: 'negative',
+        },
+      }).onOk(() => {
+        this.$q.loading.show();
+        this.$axios.post('logout').then(() => {
+          this.$axios.defaults.headers.common.Authorization = '';
+          this.$store.user = {};
+          localStorage.removeItem('tokenSuper');
+          this.$store.isLoggedIn = false;
+          this.$q.loading.hide();
+        });
+      });
+    },
     toggleLeftDrawer() {
       this.leftDrawerOpen = !this.leftDrawerOpen;
     },
     ingresar() {
-      this.loginDialig = true;
+      this.loginDialog = true;
       this.typeLogin = 'login';
     },
   },
