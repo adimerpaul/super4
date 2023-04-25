@@ -125,11 +125,11 @@ export default {
           icon: 'check_circle',
           position: 'top',
         });
-        this.$emit('closeDialog');
-        // this.$router.push('/');
         this.$store.user = res.data.user;
         this.$store.isLoggedIn = true;
         this.$axios.defaults.headers.common.Authorization = `Bearer ${res.data.token}`;
+        this.$emit('closeDialog', res.data.token);
+        // this.$router.push('/');
       }).catch((err) => {
         this.$q.loading.hide();
         this.$q.notify({
@@ -158,7 +158,7 @@ export default {
               icon: 'check_circle',
               position: 'top',
             });
-            this.$emit('closeDialog');
+            this.$emit('closeDialog', res.data.token);
             // this.$router.push('/');
             this.$store.user = res.data.user;
             this.$store.isLoggedIn = true;

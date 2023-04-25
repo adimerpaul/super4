@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('description');
             $table->string('lat');
             $table->string('lng');
+            $table->double('distance',11,2)->nullable();
+            $table->double('deliveryAmount',11,2)->nullable();
             $table->string('active')->default('Inactivo');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')

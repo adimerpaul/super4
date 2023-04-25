@@ -14,6 +14,8 @@ class Address extends Model
         'lat',
         'lng',
         'active',
+        'distance',
+        'deliveryAmount',
         'user_id',
     ];
 }

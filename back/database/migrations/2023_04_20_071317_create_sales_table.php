@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->string('status')->nullable();
             $table->double('total', 11, 2)->nullable();
+            $table->double('distance',11,2);
+            $table->double('deliveryAmount',11,2);
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('address_id')->nullable();

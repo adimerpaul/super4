@@ -6,61 +6,20 @@ use App\Models\Sale;
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 
-class SaleController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+class SaleController extends Controller{
+    public function index(){ return Sale::whereDate('created_at', today())->get(); }
+    public function store(StoreSaleRequest $request){
+        $addresses = Sale::find($request->sale_id);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $request->merge(['user_id' => $request->user()->id]);
+        $request->merge(['date' => today()]);
+        $request->merge(['time' => now()]);
+        $request->merge(['status' => 'Pendiente']);
+        $sale = Sale::create($request->validated());
+        return $sale;
     }
+    public function show(Sale $sale){ return $sale; }
+    public function update(UpdateSaleRequest $request, Sale $sale){ $sale->update($request->validated()); return $sale; }
+    public function destroy(Sale $sale){ $sale->delete(); return $sale; }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreSaleRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateSaleRequest $request, Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Sale $sale)
-    {
-        //
-    }
 }
