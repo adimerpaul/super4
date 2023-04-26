@@ -15,12 +15,15 @@ return new class extends Migration
             $table->id();
             $table->integer('quantity')->nullable();
             $table->string('product')->nullable();
-            $table->integer('total')->nullable();
+            $table->string('notes')->nullable();
+            $table->integer('price')->nullable();
             $table->double('subtotal', 11, 2)->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('producto_id')->nullable();
             $table->foreign('producto_id')->references('id')->on('productos');
+            $table->unsignedBigInteger('sale_id')->nullable();
+            $table->foreign('sale_id')->references('id')->on('sales');
             $table->timestamps();
         });
     }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('avatar')->default('avatar.png');
             $table->string('externalId')->nullable();
             $table->string('externalAuth')->nullable();
+            $table->string('type')->default('client');
             $table->rememberToken();
             $table->timestamps();
         });

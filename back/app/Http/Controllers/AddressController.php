@@ -46,6 +46,8 @@ class AddressController extends Controller{
                 $address->deliveryAmount = $de9a10;
             }elseif($distance <= 100){
                 $address->deliveryAmount = $de10a100;
+            }else{
+                $address->deliveryAmount = 1000;
             }
             $address->save();
         });

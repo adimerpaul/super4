@@ -70,6 +70,10 @@ class CogSeeder extends Seeder
                 'name' => 'de10a100',
                 'value' => '20',
             ],
+            [
+                'name' => 'limitDistance',
+                'value' => '10',
+            ],
         ]);
     }
 }
